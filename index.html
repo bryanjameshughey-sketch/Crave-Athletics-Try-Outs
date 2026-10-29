@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div class="flex items-center space-x-3">
-                <button onclick="openAddModal()" class="bg-white hover:bg-gray-200 text-black px-4 py-2 rounded-xl text-sm font-extrabold transition-all flex items-center space-x-2 shadow-md">
+                <button type="button" onclick="openAddModal()" class="bg-white hover:bg-gray-200 text-black px-4 py-2 rounded-xl text-sm font-extrabold transition-all flex items-center space-x-2 shadow-md cursor-pointer">
                     <span>+ Add Athlete</span>
                 </button>
             </div>
@@ -209,13 +209,17 @@
         </div>
     </div>
 
-    <!-- Main Application JavaScript (Supabase Connected) -->
+    <!-- Main Application JavaScript (Supabase Connected & Debug Alerted) -->
     <script>
-        // Supabase Connected Credentials
         const SUPABASE_URL = 'https://knkonyoqcchokugeojcx.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtua29ueW9xY2Nob2t1Z2VvamN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzMDU5MTksImV4cCI6MjEwODg4MTkxOX0.4AumQPUUzdaI1Xq0ibNfF6BCyrFuzFmzHulEONxIhWI';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let supabase = null;
+        try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch(e) {
+            alert('Failed to initialize Supabase client: ' + e.message);
+        }
 
         let athletes = [];
         let currentFilterDivision = 'All';
@@ -223,7 +227,6 @@
         let searchQuery = '';
         let activeAthleteId = null;
 
-        // Level Styling Map (0=White, 1=Yellow, 2=Blue, 3=Red, 4=Orange, 5=Green, 6=Purple, 7=Black)
         const levelBadgeMap = {
             0: "bg-lvl0 text-black border border-white",
             1: "bg-lvl1 text-black",
@@ -235,7 +238,6 @@
             7: "bg-lvl7 text-white border border-craveBorder"
         };
 
-        // Skill Template Structured by Your Categories
         function generateDefaultSkillTemplate() {
             return {
                 "Motions": [
@@ -262,8 +264,8 @@
             };
         }
 
-        // Fetch Athletes Live from Supabase Database
         async function loadAthletesFromSupabase() {
+            if (!supabase) return;
             const { data, error } = await supabase
                 .from('athletes')
                 .select('*')
@@ -271,13 +273,20 @@
 
             if (error) {
                 console.error('Error loading athletes from Supabase:', error);
+                // If table doesn't exist yet, show a friendly warning inside the grid
+                document.getElementById('roster-grid').innerHTML = `
+                    <div class="col-span-full py-12 text-center bg-craveCard border border-red-500/40 rounded-2xl p-6">
+                        <p class="text-sm font-bold text-red-400">Database Connection Notice</p>
+                        <p class="text-xs text-gray-300 mt-1">Could not load from Supabase table 'athletes'. Make sure your 'athletes' table is created in Supabase.</p>
+                        <p class="text-xs font-mono text-gray-500 mt-2">${error.message}</p>
+                    </div>
+                `;
             } else {
                 athletes = data || [];
                 renderRoster();
             }
         }
 
-        // Render Roster Grid
         function renderRoster() {
             const grid = document.getElementById('roster-grid');
             grid.innerHTML = '';
@@ -300,7 +309,7 @@
                     <div class="col-span-full py-16 text-center bg-craveCard border border-craveBorder rounded-2xl p-8">
                         <p class="text-base font-bold text-gray-300">No Athletes on Roster</p>
                         <p class="text-xs text-gray-500 mt-1 mb-4">Click "+ Add Athlete" above to add your first athlete to the tryout roster.</p>
-                        <button onclick="openAddModal()" class="px-4 py-2 bg-white text-black text-xs font-black rounded-xl hover:bg-gray-200 transition-all">+ Add Athlete</button>
+                        <button onclick="openAddModal()" class="px-4 py-2 bg-white text-black text-xs font-black rounded-xl hover:bg-gray-200 transition-all cursor-pointer">+ Add Athlete</button>
                     </div>
                 `;
                 return;
@@ -385,13 +394,13 @@
                             <div class="flex items-center space-x-3">
                                 <span class="text-xs font-black px-2 py-0.5 rounded ${badgeClass}">Lvl ${skill.level}</span>
                                 <span class="text-sm font-medium text-gray-200">${skill.name}</span>
-                                ${skill.videoUrl ? `<button onclick="playVideo('${skill.videoUrl}', '${skill.name}')" class="text-xs bg-white/10 text-white px-2 py-0.5 rounded font-bold hover:bg-white/20 transition-all">▶ Play Clip</button>` : ''}
+                                ${skill.videoUrl ? `<button type="button" onclick="playVideo('${skill.videoUrl}', '${skill.name}')" class="text-xs bg-white/10 text-white px-2 py-0.5 rounded font-bold hover:bg-white/20 transition-all">▶ Play Clip</button>` : ''}
                             </div>
                             <div class="flex items-center justify-between sm:justify-end space-x-2">
                                 <div class="inline-flex rounded-lg bg-craveCard border border-craveBorder p-0.5">
-                                    <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'No')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'No' ? 'bg-red-500/20 text-red-400' : 'text-gray-400 hover:text-white'}">No</button>
-                                    <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Working')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Working' ? 'bg-amber-500/20 text-amber-400' : 'text-gray-400 hover:text-white'}">Working</button>
-                                    <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Has It')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Has It' ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400 hover:text-white'}">Has It</button>
+                                    <button type="button" onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'No')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'No' ? 'bg-red-500/20 text-red-400' : 'text-gray-400 hover:text-white'}">No</button>
+                                    <button type="button" onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Working')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Working' ? 'bg-amber-500/20 text-amber-400' : 'text-gray-400 hover:text-white'}">Working</button>
+                                    <button type="button" onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Has It')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Has It' ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400 hover:text-white'}">Has It</button>
                                 </div>
                                 <label class="cursor-pointer bg-craveBorder hover:bg-gray-700 text-gray-300 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all">
                                     + Clip
@@ -418,6 +427,7 @@
         }
 
         async function updateSkillStatus(athleteId, category, skillIdx, newStatus) {
+            if (!supabase) return;
             const athlete = athletes.find(a => a.id === athleteId);
             if (athlete && athlete.skills[category] && athlete.skills[category][skillIdx]) {
                 athlete.skills[category][skillIdx].status = newStatus;
@@ -428,7 +438,7 @@
                     .eq('id', athleteId);
 
                 if (error) {
-                    console.error('Error updating skill in Supabase:', error);
+                    alert('Error updating skill: ' + error.message);
                 } else {
                     openDetailModal(athleteId);
                 }
@@ -471,6 +481,11 @@
 
         async function handleAddNewAthlete(event) {
             event.preventDefault();
+            if (!supabase) {
+                alert('Supabase client is not connected.');
+                return;
+            }
+
             const name = document.getElementById('new-name').value;
             const tryout = document.getElementById('new-tryout').value;
             const division = document.getElementById('new-division').value;
@@ -491,8 +506,7 @@
                 .select();
 
             if (error) {
-                console.error('Error inserting athlete into Supabase:', error);
-                alert('Failed to save to database. Check console for details.');
+                alert('Supabase Insert Error: ' + error.message);
             } else {
                 closeAddModal();
                 document.getElementById('add-athlete-form').reset();
@@ -502,6 +516,7 @@
 
         async function deleteAthlete(event, id) {
             event.stopPropagation();
+            if (!supabase) return;
             if (confirm("Are you sure you want to delete this athlete from the roster?")) {
                 const { error } = await supabase
                     .from('athletes')
@@ -509,7 +524,7 @@
                     .eq('id', id);
 
                 if (error) {
-                    console.error('Error deleting athlete:', error);
+                    alert('Supabase Delete Error: ' + error.message);
                 } else {
                     loadAthletesFromSupabase();
                 }
