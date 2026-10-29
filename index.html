@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crave Athletics | Team Placements & Skill Tracker</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -37,7 +40,7 @@
 </head>
 <body class="bg-craveDark text-white min-h-screen selection:bg-white selection:text-black">
 
-    <!-- Top Navigation Header (Black & White Theme) -->
+    <!-- Top Navigation Header -->
     <header class="border-b border-craveBorder bg-craveDark/90 backdrop-blur sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -102,14 +105,14 @@
         <div class="mb-6 bg-craveCard border border-craveBorder rounded-2xl p-4">
             <p class="text-xs font-extrabold uppercase text-gray-400 tracking-wider mb-2">Skill Level Color Key:</p>
             <div class="flex flex-wrap gap-2 text-xs font-bold">
-                <span class="px-2.5 py-1 rounded bg-lvl0 text-black border border-white">Level 0</span>
-                <span class="px-2.5 py-1 rounded bg-lvl1 text-black">Level 1</span>
-                <span class="px-2.5 py-1 rounded bg-lvl2 text-white">Level 2</span>
-                <span class="px-2.5 py-1 rounded bg-lvl3 text-white">Level 3</span>
-                <span class="px-2.5 py-1 rounded bg-lvl4 text-black">Level 4</span>
-                <span class="px-2.5 py-1 rounded bg-lvl5 text-black">Level 5</span>
-                <span class="px-2.5 py-1 rounded bg-lvl6 text-white">Level 6</span>
-                <span class="px-2.5 py-1 rounded bg-lvl7 text-white border border-craveBorder">Level 7</span>
+                <span class="px-2.5 py-1 rounded bg-lvl0 text-black border border-white">Level 0: White</span>
+                <span class="px-2.5 py-1 rounded bg-lvl1 text-black">Level 1: Yellow</span>
+                <span class="px-2.5 py-1 rounded bg-lvl2 text-white">Level 2: Blue</span>
+                <span class="px-2.5 py-1 rounded bg-lvl3 text-white">Level 3: Red</span>
+                <span class="px-2.5 py-1 rounded bg-lvl4 text-black">Level 4: Orange</span>
+                <span class="px-2.5 py-1 rounded bg-lvl5 text-black">Level 5: Green</span>
+                <span class="px-2.5 py-1 rounded bg-lvl6 text-white">Level 6: Purple</span>
+                <span class="px-2.5 py-1 rounded bg-lvl7 text-white border border-craveBorder">Level 7: Black</span>
             </div>
         </div>
 
@@ -130,7 +133,7 @@
 
         <!-- Roster Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="roster-grid">
-            <!-- Dynamically populated -->
+            <!-- Dynamically populated from Supabase -->
         </div>
 
     </main>
@@ -201,17 +204,34 @@
         </div>
     </div>
 
-    <!-- Main Application JavaScript -->
-    <script>
-        // Fresh Empty Roster for Crave Athletics (Ready for Supabase Sync)
-        let athletes = [];
+    <!-- Video Preview Modal -->
+    <div id="video-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4">
+        <div class="relative max-w-3xl w-full bg-craveCard border border-craveBorder rounded-2xl overflow-hidden shadow-2xl">
+            <div class="p-4 border-b border-craveBorder flex justify-between items-center">
+                <h4 id="video-modal-title" class="font-bold text-sm text-white">Skill Video Preview</h4>
+                <button onclick="closeVideoModal()" class="text-gray-400 hover:text-white font-bold text-lg">✕</button>
+            </div>
+            <div class="p-4 flex justify-center bg-black">
+                <video id="preview-player" controls class="max-h-[70vh] rounded-lg"></video>
+            </div>
+        </div>
+    </div>
 
+    <!-- Main Application JavaScript (Supabase Connected) -->
+    <script>
+        // Supabase Connected Credentials
+        const SUPABASE_URL = 'https://knkonyoqcchokugeojcx.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtua29ueW9xY2Nob2t1Z2VvamN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzMDU5MTksImV4cCI6MjEwODg4MTkxOX0.4AumQPUUzdaI1Xq0ibNfF6BCyrFuzFmzHulEONxIhWI';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let athletes = [];
         let currentFilterDivision = 'All';
         let currentFilterStatus = 'all';
         let searchQuery = '';
         let activeAthleteId = null;
 
-        // Level Styling Map
+        // Level Styling Map (0=White, 1=Yellow, 2=Blue, 3=Red, 4=Orange, 5=Green, 6=Purple, 7=Black)
         const levelBadgeMap = {
             0: "bg-lvl0 text-black border border-white",
             1: "bg-lvl1 text-black",
@@ -223,29 +243,46 @@
             7: "bg-lvl7 text-white border border-craveBorder"
         };
 
-        // Standard Skill Template Generator
+        // Skill Template Structured by Your Categories
         function generateDefaultSkillTemplate() {
             return {
-                "Running Tumbling": [
-                    { name: "Cartwheel / Round Off", level: 1, status: "No", videoUrl: null },
-                    { name: "RO Back Handspring", level: 2, status: "No", videoUrl: null },
-                    { name: "RO BHS Tuck", level: 3, status: "No", videoUrl: null },
-                    { name: "Layout", level: 4, status: "No", videoUrl: null },
-                    { name: "Full Twisting Layout", level: 5, status: "No", videoUrl: null }
+                "Motions": [
+                    { name: "Sharpness & Placement", level: 1, status: "No", videoUrl: null },
+                    { name: "Sync & Timing", level: 2, status: "No", videoUrl: null },
+                    { name: "Execution & Power", level: 3, status: "No", videoUrl: null }
                 ],
-                "Standing Tumbling": [
-                    { name: "Forward / Backward Roll", level: 0, status: "No", videoUrl: null },
-                    { name: "Standing Back Handspring", level: 2, status: "No", videoUrl: null },
-                    { name: "Jump BHS", level: 3, status: "No", videoUrl: null },
-                    { name: "Standing Tuck", level: 4, status: "No", videoUrl: null }
+                "Jump Kicks": [
+                    { name: "Kick / Leg Flexibility", level: 1, status: "No", videoUrl: null },
+                    { name: "Double Kick Sequence", level: 3, status: "No", videoUrl: null }
                 ],
-                "Stunting & Pyramids": [
-                    { name: "Prep Level Stunt", level: 1, status: "No", videoUrl: null },
-                    { name: "Extension / Lib", level: 2, status: "No", videoUrl: null },
-                    { name: "Full Up / Release Moves", level: 4, status: "No", videoUrl: null },
-                    { name: "Rewind / Elite Inversions", level: 6, status: "No", videoUrl: null }
+                "Jump Skills": [
+                    { name: "Toe Touch", level: 2, status: "No", videoUrl: null },
+                    { name: "Pike Jump", level: 2, status: "No", videoUrl: null },
+                    { name: "Hurdie / Herkie", level: 3, status: "No", videoUrl: null },
+                    { name: "Jump Combination (x3)", level: 4, status: "No", videoUrl: null }
+                ],
+                "Body Positions": [
+                    { name: "Prep Level Lib", level: 2, status: "No", videoUrl: null },
+                    { name: "Extension / Full Lib", level: 4, status: "No", videoUrl: null },
+                    { name: "Scorpion / Bow & Arrow", level: 5, status: "No", videoUrl: null },
+                    { name: "Tick-Tock Body Positions", level: 6, status: "No", videoUrl: null }
                 ]
             };
+        }
+
+        // Fetch Athletes Live from Supabase Database
+        async function loadAthletesFromSupabase() {
+            const { data, error } = await supabase
+                .from('athletes')
+                .select('*')
+                .order('id', { ascending: false });
+
+            if (error) {
+                console.error('Error loading athletes from Supabase:', error);
+            } else {
+                athletes = data || [];
+                renderRoster();
+            }
         }
 
         // Render Roster Grid
@@ -256,7 +293,8 @@
             let filtered = athletes.filter(athlete => {
                 const matchDiv = currentFilterDivision === 'All' || athlete.division === currentFilterDivision;
                 const matchStatus = currentFilterStatus === 'all' || athlete.status.toLowerCase() === currentFilterStatus.toLowerCase();
-                const matchSearch = athlete.name.toLowerCase().includes(searchQuery.toLowerCase()) || athlete.tryout.toLowerCase().includes(searchQuery.toLowerCase());
+                const tryoutStr = athlete.tryout_number || athlete.tryout || '';
+                const matchSearch = athlete.name.toLowerCase().includes(searchQuery.toLowerCase()) || tryoutStr.toLowerCase().includes(searchQuery.toLowerCase());
                 return matchDiv && matchStatus && matchSearch;
             });
 
@@ -278,6 +316,7 @@
 
             filtered.forEach(athlete => {
                 const initials = athlete.name.split(' ').map(n => n[0]).join('');
+                const tryoutNum = athlete.tryout_number || athlete.tryout || '#00';
                 
                 const card = document.createElement('div');
                 card.className = "bg-craveCard border border-craveBorder hover:border-gray-400 rounded-2xl p-5 transition-all cursor-pointer flex flex-col justify-between group";
@@ -289,7 +328,10 @@
                             <div class="w-12 h-12 rounded-xl bg-white text-black font-black flex items-center justify-center text-base shadow-md">
                                 ${initials}
                             </div>
-                            <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-craveSubtle border border-craveBorder text-gray-300">${athlete.tryout}</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-craveSubtle border border-craveBorder text-gray-300">${tryoutNum}</span>
+                                <button onclick="deleteAthlete(event, ${athlete.id})" class="text-gray-500 hover:text-red-400 font-bold px-1.5 py-0.5 rounded text-xs transition-colors" title="Delete Athlete">✕</button>
+                            </div>
                         </div>
                         <h3 class="font-extrabold text-white text-base group-hover:text-gray-300 transition-colors">${athlete.name}</h3>
                         <p class="text-xs text-gray-400 mt-0.5">${athlete.division} • ${athlete.position}</p>
@@ -330,15 +372,17 @@
             const athlete = athletes.find(a => a.id === id);
             if (!athlete) return;
 
+            const tryoutNum = athlete.tryout_number || athlete.tryout || '#00';
+
             document.getElementById('modal-name').innerText = athlete.name;
-            document.getElementById('modal-tryout').innerText = athlete.tryout;
+            document.getElementById('modal-tryout').innerText = tryoutNum;
             document.getElementById('modal-meta').innerText = `${athlete.division} Division • ${athlete.position}`;
             document.getElementById('modal-avatar').innerText = athlete.name.split(' ').map(n => n[0]).join('');
 
             const container = document.getElementById('modal-skills-container');
             container.innerHTML = '';
 
-            for (const [category, skills] of Object.entries(athlete.skills)) {
+            for (const [category, skills] of Object.entries(athlete.skills || {})) {
                 let catDiv = document.createElement('div');
                 catDiv.className = "bg-craveDark border border-craveBorder rounded-xl p-4";
                 
@@ -349,6 +393,7 @@
                             <div class="flex items-center space-x-3">
                                 <span class="text-xs font-black px-2 py-0.5 rounded ${badgeClass}">Lvl ${skill.level}</span>
                                 <span class="text-sm font-medium text-gray-200">${skill.name}</span>
+                                ${skill.videoUrl ? `<button onclick="playVideo('${skill.videoUrl}', '${skill.name}')" class="text-xs bg-white/10 text-white px-2 py-0.5 rounded font-bold hover:bg-white/20 transition-all">▶ Play Clip</button>` : ''}
                             </div>
                             <div class="flex items-center justify-between sm:justify-end space-x-2">
                                 <div class="inline-flex rounded-lg bg-craveCard border border-craveBorder p-0.5">
@@ -356,6 +401,10 @@
                                     <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Working')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Working' ? 'bg-amber-500/20 text-amber-400' : 'text-gray-400 hover:text-white'}">Working</button>
                                     <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Has It')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Has It' ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400 hover:text-white'}">Has It</button>
                                 </div>
+                                <label class="cursor-pointer bg-craveBorder hover:bg-gray-700 text-gray-300 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all">
+                                    + Clip
+                                    <input type="file" accept="video/*" class="hidden" onchange="uploadSkillVideo(event, ${athlete.id}, '${category}', ${sIdx})">
+                                </label>
                             </div>
                         </div>
                     `;
@@ -373,15 +422,52 @@
 
         function closeDetailModal() {
             document.getElementById('detail-modal').classList.add('hidden');
-            renderRoster();
+            loadAthletesFromSupabase();
         }
 
-        function updateSkillStatus(athleteId, category, skillIdx, newStatus) {
+        // Update skill status in Supabase database
+        async function updateSkillStatus(athleteId, category, skillIdx, newStatus) {
             const athlete = athletes.find(a => a.id === athleteId);
             if (athlete && athlete.skills[category] && athlete.skills[category][skillIdx]) {
                 athlete.skills[category][skillIdx].status = newStatus;
-                openDetailModal(athleteId);
+
+                const { error } = await supabase
+                    .from('athletes')
+                    .update({ skills: athlete.skills })
+                    .eq('id', athleteId);
+
+                if (error) {
+                    console.error('Error updating skill in Supabase:', error);
+                } else {
+                    openDetailModal(athleteId);
+                }
             }
+        }
+
+        function uploadSkillVideo(event, athleteId, category, skillIdx) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const videoUrl = URL.createObjectURL(file);
+            const athlete = athletes.find(a => a.id === athleteId);
+            if (athlete && athlete.skills[category] && athlete.skills[category][skillIdx]) {
+                athlete.skills[category][skillIdx].videoUrl = videoUrl;
+                updateSkillStatus(athleteId, category, skillIdx, athlete.skills[category][skillIdx].status);
+            }
+        }
+
+        function playVideo(url, title) {
+            document.getElementById('video-modal-title').innerText = title;
+            const player = document.getElementById('preview-player');
+            player.src = url;
+            document.getElementById('video-modal').classList.remove('hidden');
+            player.play();
+        }
+
+        function closeVideoModal() {
+            const player = document.getElementById('preview-player');
+            player.pause();
+            player.src = '';
+            document.getElementById('video-modal').classList.add('hidden');
         }
 
         function openAddModal() {
@@ -392,7 +478,8 @@
             document.getElementById('add-modal').classList.add('hidden');
         }
 
-        function handleAddNewAthlete(event) {
+        // Insert new athlete into Supabase database
+        async function handleAddNewAthlete(event) {
             event.preventDefault();
             const name = document.getElementById('new-name').value;
             const tryout = document.getElementById('new-tryout').value;
@@ -400,22 +487,48 @@
             const position = document.getElementById('new-position').value;
 
             const newAthlete = {
-                id: Date.now(),
                 name,
-                tryout,
+                tryout_number: tryout,
                 division,
                 position,
                 status: "To be assessed",
                 skills: generateDefaultSkillTemplate()
             };
 
-            athletes.unshift(newAthlete);
-            closeAddModal();
-            renderRoster();
+            const { data, error } = await supabase
+                .from('athletes')
+                .insert([newAthlete])
+                .select();
+
+            if (error) {
+                console.error('Error inserting athlete into Supabase:', error);
+                alert('Failed to save to database. Check console for details.');
+            } else {
+                closeAddModal();
+                loadAthletesFromSupabase();
+                event.target.reset();
+            }
         }
 
-        // Initial render
-        renderRoster();
+        // Delete athlete from Supabase database
+        async function deleteAthlete(event, id) {
+            event.stopPropagation();
+            if (confirm("Are you sure you want to delete this athlete from the roster?")) {
+                const { error } = await supabase
+                    .from('athletes')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) {
+                    console.error('Error deleting athlete:', error);
+                } else {
+                    loadAthletesFromSupabase();
+                }
+            }
+        }
+
+        // Load data from Supabase on page startup
+        loadAthletesFromSupabase();
     </script>
 </body>
 </html>
