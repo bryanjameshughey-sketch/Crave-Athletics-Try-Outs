@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crave Athletics | Team Placements & Skill Tracker</title>
+    <title>Crave Athletics | Try Out App</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client Library -->
@@ -49,7 +49,7 @@
                 </div>
                 <div>
                     <h1 class="font-extrabold text-lg tracking-tight leading-none text-white">CRAVE ATHLETICS</h1>
-                    <p class="text-xs text-gray-400 font-medium">Team Placements & Skill Tracker</p>
+                    <p class="text-xs text-gray-400 font-medium">Try Out App</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
@@ -63,20 +63,12 @@
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- The Crave Way Banner Bar -->
+        <!-- Banner Bar -->
         <div class="mb-8 bg-craveCard border border-craveBorder rounded-2xl p-4 sm:p-6 shadow-xl">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <span class="inline-block px-3 py-1 bg-white text-black text-xs font-black rounded-full mb-2 uppercase tracking-wider">Not Your Average Cheer Gym</span>
+                    <span class="inline-block px-3 py-1 bg-white text-black text-xs font-black rounded-full mb-2 uppercase tracking-wider">Where It's At.</span>
                     <h2 class="text-2xl font-extrabold text-white">2027 Season Tryouts & Assessments</h2>
-                    <p class="text-sm text-gray-400 mt-1">Consistent • Resilient • Authentic • Positive • Growing</p>
-                </div>
-                <div class="flex flex-wrap gap-2 text-xs font-semibold">
-                    <span class="px-2.5 py-1 bg-craveSubtle border border-craveBorder text-gray-300 rounded-lg">C: Quality Always</span>
-                    <span class="px-2.5 py-1 bg-craveSubtle border border-craveBorder text-gray-300 rounded-lg">R: Recover Quickly</span>
-                    <span class="px-2.5 py-1 bg-craveSubtle border border-craveBorder text-gray-300 rounded-lg">A: Express Nature</span>
-                    <span class="px-2.5 py-1 bg-craveSubtle border border-craveBorder text-gray-300 rounded-lg">V: Positive Atmosphere</span>
-                    <span class="px-2.5 py-1 bg-craveSubtle border border-craveBorder text-gray-300 rounded-lg">E: Grow Exponentially</span>
                 </div>
             </div>
         </div>
@@ -167,7 +159,7 @@
     <div id="add-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-craveCard border border-craveBorder rounded-2xl w-full max-w-md overflow-hidden shadow-2xl p-6">
             <h3 class="text-lg font-extrabold text-white mb-4">Add New Athlete</h3>
-            <form onsubmit="handleAddNewAthlete(event)" class="space-y-4">
+            <form id="add-athlete-form" onsubmit="handleAddNewAthlete(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1">Full Name</label>
                     <input type="text" id="new-name" required placeholder="e.g. Maya Smith" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-white">
@@ -425,7 +417,6 @@
             loadAthletesFromSupabase();
         }
 
-        // Update skill status in Supabase database
         async function updateSkillStatus(athleteId, category, skillIdx, newStatus) {
             const athlete = athletes.find(a => a.id === athleteId);
             if (athlete && athlete.skills[category] && athlete.skills[category][skillIdx]) {
@@ -478,7 +469,6 @@
             document.getElementById('add-modal').classList.add('hidden');
         }
 
-        // Insert new athlete into Supabase database
         async function handleAddNewAthlete(event) {
             event.preventDefault();
             const name = document.getElementById('new-name').value;
@@ -505,12 +495,11 @@
                 alert('Failed to save to database. Check console for details.');
             } else {
                 closeAddModal();
+                document.getElementById('add-athlete-form').reset();
                 loadAthletesFromSupabase();
-                event.target.reset();
             }
         }
 
-        // Delete athlete from Supabase database
         async function deleteAthlete(event, id) {
             event.stopPropagation();
             if (confirm("Are you sure you want to delete this athlete from the roster?")) {
@@ -527,7 +516,6 @@
             }
         }
 
-        // Load data from Supabase on page startup
         loadAthletesFromSupabase();
     </script>
 </body>
