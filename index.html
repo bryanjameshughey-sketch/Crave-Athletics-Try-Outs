@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crave Athletics | Team Placements & Skill Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        craveDark: '#0a0a0c',
+                        craveCard: '#13141a',
+                        craveBorder: '#232633',
+                        cravePink: '#ff007a',
+                        craveNeon: '#00f2fe'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-craveDark text-gray-100 min-h-screen selection:bg-cravePink selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="border-b border-craveBorder bg-craveCard/80 backdrop-blur sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cravePink to-purple-600 flex items-center justify-center font-extrabold text-xl shadow-lg shadow-cravePink/20">
+                    C
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg tracking-tight leading-none text-white">CRAVE ATHLETICS</h1>
+                    <p class="text-xs text-gray-400 font-medium">Team Placements & Skill Tracker</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="openAddModal()" class="bg-cravePink hover:bg-cravePink/90 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-cravePink/25 transition-all flex items-center space-x-2">
+                    <span>+ Add Athlete</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- The Crave Way Banner Bar -->
+        <div class="mb-8 bg-gradient-to-r from-craveCard to-[#1a1c26] border border-craveBorder rounded-2xl p-4 sm:p-6 shadow-xl">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <span class="inline-block px-3 py-1 bg-cravePink/10 text-cravePink text-xs font-bold rounded-full mb-2 uppercase tracking-wider">Not Your Average Cheer Gym</span>
+                    <h2 class="text-2xl font-extrabold text-white">2027 Season Tryouts & Assessments</h2>
+                    <p class="text-sm text-gray-400 mt-1">Consistent • Resilient • Authentic • Positive • Growing</p>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                    <span class="px-2.5 py-1 bg-craveBorder rounded-lg text-gray-300">C: Quality Always</span>
+                    <span class="px-2.5 py-1 bg-craveBorder rounded-lg text-gray-300">R: Recover Quickly</span>
+                    <span class="px-2.5 py-1 bg-craveBorder rounded-lg text-gray-300">A: Express Nature</span>
+                    <span class="px-2.5 py-1 bg-craveBorder rounded-lg text-gray-300">V: Positive Atmosphere</span>
+                    <span class="px-2.5 py-1 bg-craveBorder rounded-lg text-gray-300">E: Grow Exponentially</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div onclick="filterByStatus('all')" class="bg-craveCard border border-craveBorder hover:border-gray-600 cursor-pointer p-4 rounded-2xl transition-all">
+                <p class="text-xs font-semibold text-gray-400 uppercase">Total Athletes</p>
+                <p class="text-3xl font-extrabold text-white mt-1" id="stat-total">0</p>
+            </div>
+            <div onclick="filterByStatus('To be assessed')" class="bg-craveCard border border-craveBorder hover:border-amber-500/50 cursor-pointer p-4 rounded-2xl transition-all">
+                <p class="text-xs font-semibold text-amber-400 uppercase">To Be Assessed</p>
+                <p class="text-3xl font-extrabold text-white mt-1" id="stat-assess">0</p>
+            </div>
+            <div onclick="filterByStatus('Pending approval')" class="bg-craveCard border border-craveBorder hover:border-purple-500/50 cursor-pointer p-4 rounded-2xl transition-all">
+                <p class="text-xs font-semibold text-purple-400 uppercase">Pending Approval</p>
+                <p class="text-3xl font-extrabold text-white mt-1" id="stat-pending">0</p>
+            </div>
+            <div onclick="filterByStatus('Complete')" class="bg-craveCard border border-craveBorder hover:border-emerald-500/50 cursor-pointer p-4 rounded-2xl transition-all">
+                <p class="text-xs font-semibold text-emerald-400 uppercase">Complete</p>
+                <p class="text-3xl font-extrabold text-white mt-1" id="stat-complete">0</p>
+            </div>
+        </div>
+
+        <!-- Filters & Search Toolbar -->
+        <div class="flex flex-col md:flex-row gap-4 items-center justify-between mb-6">
+            <!-- Division Pills -->
+            <div class="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0" id="division-pills">
+                <button onclick="filterDivision('All')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-craveDark transition-all whitespace-nowrap div-pill">All Divisions</button>
+                <button onclick="filterDivision('Youth')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Youth</button>
+                <button onclick="filterDivision('Junior')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Junior</button>
+                <button onclick="filterDivision('Senior')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Senior</button>
+                <button onclick="filterDivision('Open')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Open</button>
+            </div>
+
+            <!-- Search Input -->
+            <div class="w-full md:w-72">
+                <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search athlete or #00..." class="w-full bg-craveCard border border-craveBorder rounded-xl px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cravePink transition-all">
+            </div>
+        </div>
+
+        <!-- Roster Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="roster-grid">
+            <!-- Dynamically populated -->
+        </div>
+
+    </main>
+
+    <!-- Athlete Detail Modal -->
+    <div id="detail-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-craveCard border border-craveBorder rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-craveBorder flex items-center justify-between bg-[#171922]">
+                <div class="flex items-center space-x-4">
+                    <div id="modal-avatar" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cravePink to-purple-600 flex items-center justify-center font-extrabold text-xl text-white">
+                        EA
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h3 id="modal-name" class="text-xl font-extrabold text-white">Athlete Name</h3>
+                            <span id="modal-tryout" class="text-xs font-mono px-2 py-0.5 rounded bg-craveBorder text-cravePink">#000</span>
+                        </div>
+                        <p id="modal-meta" class="text-xs text-gray-400 mt-0.5">Senior Elite • Flyer</p>
+                    </div>
+                </div>
+                <button onclick="closeDetailModal()" class="w-10 h-10 rounded-xl bg-craveBorder hover:bg-gray-700 flex items-center justify-center text-gray-300 font-bold transition-all">✕</button>
+            </div>
+
+            <!-- Modal Content (Skill Matrix Scrollable) -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-1" id="modal-skills-container">
+                <!-- Skill categories injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Athlete Modal -->
+    <div id="add-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-craveCard border border-craveBorder rounded-2xl w-full max-w-md overflow-hidden shadow-2xl p-6">
+            <h3 class="text-lg font-extrabold text-white mb-4">Add New Athlete</h3>
+            <form onsubmit="handleAddNewAthlete(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Full Name</label>
+                    <input type="text" id="new-name" required placeholder="e.g. Maya Smith" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cravePink">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1">Tryout Number</label>
+                        <input type="text" id="new-tryout" required placeholder="#045" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cravePink">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1">Division</label>
+                        <select id="new-division" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-cravePink">
+                            <option value="Youth">Youth</option>
+                            <option value="Junior">Junior</option>
+                            <option value="Senior" selected>Senior</option>
+                            <option value="Open">Open</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1">Stunt Position</label>
+                    <select id="new-position" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-cravePink">
+                        <option value="Flyer">Flyer</option>
+                        <option value="Base">Base</option>
+                        <option value="Backspot">Backspot</option>
+                        <option value="Frontspot">Frontspot</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-xl text-sm font-bold bg-craveBorder text-gray-300 hover:bg-gray-700">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-sm font-bold bg-cravePink text-white hover:bg-cravePink/90 shadow-lg shadow-cravePink/25">Add Athlete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Video Preview Modal -->
+    <div id="video-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4">
+        <div class="relative max-w-3xl w-full bg-craveCard border border-craveBorder rounded-2xl overflow-hidden">
+            <div class="p-4 border-b border-craveBorder flex justify-between items-center">
+                <h4 id="video-modal-title" class="font-bold text-sm text-white">Skill Video Preview</h4>
+                <button onclick="closeVideoModal()" class="text-gray-400 hover:text-white font-bold text-lg">✕</button>
+            </div>
+            <div class="p-4 flex justify-center bg-black">
+                <video id="preview-player" controls class="max-h-[70vh] rounded-lg"></video>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main JavaScript Application Logic -->
+    <script>
+        // Initial Mock Database for Crave Athletics Tryouts
+        let athletes = [
+            {
+                id: 1,
+                name: "Ella Murphy",
+                tryout: "#009",
+                division: "Senior",
+                position: "Flyer",
+                status: "Complete",
+                skills: {
+                    "Running Tumbling": [
+                        { name: "Round Off Back Handspring", status: "Has It", videoUrl: null },
+                        { name: "RO BHS Tuck", status: "Has It", videoUrl: null },
+                        { name: "Layout / Full", status: "Working", videoUrl: null }
+                    ],
+                    "Jumps": [
+                        { name: "Toe Touch", status: "Has It", videoUrl: null },
+                        { name: "Pike Jump", status: "Has It", videoUrl: null },
+                        { name: "Jump Sequence x3", status: "Has It", videoUrl: null }
+                    ],
+                    "Stunting": [
+                        { name: "Extension / Lib", status: "Has It", videoUrl: null },
+                        { name: "Full Down / Rewind", status: "Working", videoUrl: null },
+                        { name: "Tick Tock Body Positions", status: "Has It", videoUrl: null }
+                    ],
+                    "Flexibility": [
+                        { name: "Left & Right Splits", status: "Has It", videoUrl: null },
+                        { name: "Scorpion / Bow & Arrow", status: "Has It", videoUrl: null }
+                    ]
+                }
+            },
+            {
+                id: 2,
+                name: "Liam O'Connor",
+                tryout: "#014",
+                division: "Junior",
+                position: "Base",
+                status: "Pending approval",
+                skills: {
+                    "Running Tumbling": [
+                        { name: "Round Off Back Handspring", status: "Working", videoUrl: null },
+                        { name: "RO BHS Tuck", status: "No", videoUrl: null }
+                    ],
+                    "Jumps": [
+                        { name: "Toe Touch", status: "Working", videoUrl: null },
+                        { name: "Pike Jump", status: "Has It", videoUrl: null }
+                    ],
+                    "Stunting": [
+                        { name: "Extension Base Strength", status: "Has It", videoUrl: null },
+                        { name: "Coed Toss Up Base", status: "Working", videoUrl: null }
+                    ]
+                }
+            },
+            {
+                id: 3,
+                name: "Sophie Taylor",
+                tryout: "#022",
+                division: "Youth",
+                position: "Flyer",
+                status: "To be assessed",
+                skills: {
+                    "Running Tumbling": [
+                        { name: "Cartwheel / Round Off", status: "Has It", videoUrl: null },
+                        { name: "Back Handspring", status: "Working", videoUrl: null }
+                    ],
+                    "Jumps": [
+                        { name: "Toe Touch", status: "Has It", videoUrl: null }
+                    ],
+                    "Stunting": [
+                        { name: "Prep Level Body Positions", status: "Has It", videoUrl: null },
+                        { name: "Extension Stability", status: "Working", videoUrl: null }
+                    ]
+                }
+            }
+        ];
+
+        let currentFilterDivision = 'All';
+        let currentFilterStatus = 'all';
+        let searchQuery = '';
+        let activeAthleteId = null;
+
+        // Render Roster
+        function renderRoster() {
+            const grid = document.getElementById('roster-grid');
+            grid.innerHTML = '';
+
+            let filtered = athletes.filter(athlete => {
+                const matchDiv = currentFilterDivision === 'All' || athlete.division === currentFilterDivision;
+                const matchStatus = currentFilterStatus === 'all' || athlete.status.toLowerCase() === currentFilterStatus.toLowerCase();
+                const matchSearch = athlete.name.toLowerCase().includes(searchQuery.toLowerCase()) || athlete.tryout.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchDiv && matchStatus && matchSearch;
+            });
+
+            // Update stats
+            document.getElementById('stat-total').innerText = athletes.length;
+            document.getElementById('stat-assess').innerText = athletes.filter(a => a.status === 'To be assessed').length;
+            document.getElementById('stat-pending').innerText = athletes.filter(a => a.status === 'Pending approval').length;
+            document.getElementById('stat-complete').innerText = athletes.filter(a => a.status === 'Complete').length;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500 text-sm">No athletes found matching your filters.</div>`;
+                return;
+            }
+
+            filtered.forEach(athlete => {
+                const initials = athlete.name.split(' ').map(n => n[0]).join('');
+                let statusColor = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+                if (athlete.status === 'Complete') statusColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+                if (athlete.status === 'Pending approval') statusColor = 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+
+                const card = document.createElement('div');
+                card.className = "bg-craveCard border border-craveBorder hover:border-gray-600 rounded-2xl p-5 transition-all cursor-pointer flex flex-col justify-between group";
+                card.onclick = () => openDetailModal(athlete.id);
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-cravePink to-purple-600 flex items-center justify-center font-bold text-white text-base shadow-md">
+                                ${initials}
+                            </div>
+                            <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-craveBorder text-gray-300">${athlete.tryout}</span>
+                        </div>
+                        <h3 class="font-extrabold text-white text-base group-hover:text-cravePink transition-colors">${athlete.name}</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">${athlete.division} Elite • ${athlete.position}</p>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between pt-4 border-t border-craveBorder">
+                        <span class="text-xs px-2.5 py-1 rounded-full border ${statusColor} font-semibold">${athlete.status}</span>
+                        <span class="text-xs font-bold text-gray-400 group-hover:text-white transition-colors">View Matrix →</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Division & Status Filters
+        function filterDivision(div) {
+            currentFilterDivision = div;
+            document.querySelectorAll('.div-pill').forEach(btn => {
+                if (btn.innerText.includes(div) || (div === 'All' && btn.innerText.includes('All'))) {
+                    btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-craveDark transition-all whitespace-nowrap div-pill";
+                } else {
+                    btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill";
+                }
+            });
+            renderRoster();
+        }
+
+        function filterByStatus(status) {
+            currentFilterStatus = status;
+            renderRoster();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val;
+            renderRoster();
+        }
+
+        // Detail Modal Handling
+        function openDetailModal(id) {
+            activeAthleteId = id;
+            const athlete = athletes.find(a => a.id === id);
+            if (!athlete) return;
+
+            document.getElementById('modal-name').innerText = athlete.name;
+            document.getElementById('modal-tryout').innerText = athlete.tryout;
+            document.getElementById('modal-meta').innerText = `${athlete.division} Division • ${athlete.position}`;
+            document.getElementById('modal-avatar').innerText = athlete.name.split(' ').map(n => n[0]).join('');
+
+            const container = document.getElementById('modal-skills-container');
+            container.innerHTML = '';
+
+            for (const [category, skills] of Object.entries(athlete.skills)) {
+                let catDiv = document.createElement('div');
+                catDiv.className = "bg-craveDark border border-craveBorder rounded-xl p-4";
+                
+                let skillsHtml = skills.map((skill, sIdx) => `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between py-2.5 border-b border-craveBorder/60 last:border-0 gap-3">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-sm font-medium text-gray-200">${skill.name}</span>
+                            ${skill.videoUrl ? `<button onclick="playVideo('${skill.videoUrl}', '${skill.name}')" class="text-xs bg-cravePink/20 text-cravePink px-2 py-0.5 rounded font-bold hover:bg-cravePink/30 transition-all">▶ Play Clip</button>` : ''}
+                        </div>
+                        <div class="flex items-center justify-between sm:justify-end space-x-2">
+                            <div class="inline-flex rounded-lg bg-craveCard border border-craveBorder p-0.5">
+                                <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'No')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'No' ? 'bg-red-500/20 text-red-400' : 'text-gray-400 hover:text-white'}">No</button>
+                                <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Working')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Working' ? 'bg-amber-500/20 text-amber-400' : 'text-gray-400 hover:text-white'}">Working</button>
+                                <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Has It')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Has It' ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400 hover:text-white'}">Has It</button>
+                            </div>
+                            <label class="cursor-pointer bg-craveBorder hover:bg-gray-700 text-gray-300 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all">
+                                + Clip
+                                <input type="file" accept="video/*" class="hidden" onchange="uploadSkillVideo(event, ${athlete.id}, '${category}', ${sIdx})">
+                            </label>
+                        </div>
+                    </div>
+                `).join('');
+
+                catDiv.innerHTML = `
+                    <h4 class="font-extrabold text-xs text-cravePink uppercase tracking-wider mb-2">${category}</h4>
+                    <div class="space-y-1">${skillsHtml}</div>
+                `;
+                container.appendChild(catDiv);
+            }
+
+            document.getElementById('detail-modal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+            renderRoster();
+        }
+
+        function updateSkillStatus(athleteId, category, skillIdx, newStatus) {
+            const athlete = athletes.find(a => a.id === athleteId);
+            if (athlete && athlete.skills[category] && athlete.skills[category][skillIdx]) {
+                athlete.skills[category][skillIdx].status = newStatus;
+                openDetailModal(athleteId);
+            }
+        }
+
+        function uploadSkillVideo(event, athleteId, category, skillIdx) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const videoUrl = URL.createObjectURL(file);
+            const athlete = athletes.find(a => a.id === athleteId);
+            if (athlete && athlete.skills[category] && athlete.skills[category][skillIdx]) {
+                athlete.skills[category][skillIdx].videoUrl = videoUrl;
+                openDetailModal(athleteId);
+            }
+        }
+
+        function playVideo(url, title) {
+            document.getElementById('video-modal-title').innerText = title;
+            const player = document.getElementById('preview-player');
+            player.src = url;
+            document.getElementById('video-modal').classList.remove('hidden');
+            player.play();
+        }
+
+        function closeVideoModal() {
+            const player = document.getElementById('preview-player');
+            player.pause();
+            player.src = '';
+            document.getElementById('video-modal').classList.add('hidden');
+        }
+
+        // Add Athlete Modal
+        function openAddModal() {
+            document.getElementById('add-modal').classList.remove('hidden');
+        }
+
+        function closeAddModal() {
+            document.getElementById('add-modal').classList.add('hidden');
+        }
+
+        function handleAddNewAthlete(event) {
+            event.preventDefault();
+            const name = document.getElementById('new-name').value;
+            const tryout = document.getElementById('new-tryout').value;
+            const division = document.getElementById('new-division').value;
+            const position = document.getElementById('new-position').value;
+
+            const newAthlete = {
+                id: Date.now(),
+                name,
+                tryout,
+                division,
+                position,
+                status: "To be assessed",
+                skills: {
+                    "Running Tumbling": [
+                        { name: "Round Off Back Handspring", status: "No", videoUrl: null },
+                        { name: "RO BHS Tuck", status: "No", videoUrl: null }
+                    ],
+                    "Jumps": [
+                        { name: "Toe Touch", status: "No", videoUrl: null }
+                    ],
+                    "Stunting": [
+                        { name: "Extension / Prep", status: "No", videoUrl: null }
+                    ]
+                }
+            };
+
+            athletes.unshift(newAthlete);
+            closeAddModal();
+            renderRoster();
+        }
+
+        // Initial render on load
+        renderRoster();
+    </script>
+</body>
+</html>
