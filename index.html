@@ -11,11 +11,20 @@
             theme: {
                 extend: {
                     colors: {
-                        craveDark: '#0a0a0c',
-                        craveCard: '#13141a',
-                        craveBorder: '#232633',
-                        cravePink: '#ff007a',
-                        craveNeon: '#00f2fe'
+                        craveDark: '#050505',
+                        craveCard: '#121212',
+                        craveBorder: '#262626',
+                        craveSubtle: '#1a1a1a',
+                        
+                        // Skill Level Color Palette
+                        lvl0: '#ffffff',
+                        lvl1: '#eab308', // Yellow
+                        lvl2: '#3b82f6', // Blue
+                        lvl3: '#ef4444', // Red
+                        lvl4: '#f97316', // Orange
+                        lvl5: '#22c55e', // Green
+                        lvl6: '#a855f7', // Purple
+                        lvl7: '#000000'  // Black
                     }
                 }
             }
@@ -26,13 +35,13 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body class="bg-craveDark text-gray-100 min-h-screen selection:bg-cravePink selection:text-white">
+<body class="bg-craveDark text-white min-h-screen selection:bg-white selection:text-black">
 
-    <!-- Top Navigation Header -->
-    <header class="border-b border-craveBorder bg-craveCard/80 backdrop-blur sticky top-0 z-40">
+    <!-- Top Navigation Header (Black & White Theme) -->
+    <header class="border-b border-craveBorder bg-craveDark/90 backdrop-blur sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cravePink to-purple-600 flex items-center justify-center font-extrabold text-xl shadow-lg shadow-cravePink/20">
+                <div class="w-10 h-10 rounded-xl bg-white text-black font-black text-xl flex items-center justify-center shadow-lg">
                     C
                 </div>
                 <div>
@@ -41,7 +50,7 @@
                 </div>
             </div>
             <div class="flex items-center space-x-3">
-                <button onclick="openAddModal()" class="bg-cravePink hover:bg-cravePink/90 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-cravePink/25 transition-all flex items-center space-x-2">
+                <button onclick="openAddModal()" class="bg-white hover:bg-gray-200 text-black px-4 py-2 rounded-xl text-sm font-extrabold transition-all flex items-center space-x-2 shadow-md">
                     <span>+ Add Athlete</span>
                 </button>
             </div>
@@ -52,57 +61,70 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <!-- The Crave Way Banner Bar -->
-        <div class="mb-8 bg-gradient-to-r from-craveCard to-[#1a1c26] border border-craveBorder rounded-2xl p-4 sm:p-6 shadow-xl">
+        <div class="mb-8 bg-craveCard border border-craveBorder rounded-2xl p-4 sm:p-6 shadow-xl">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <span class="inline-block px-3 py-1 bg-cravePink/10 text-cravePink text-xs font-bold rounded-full mb-2 uppercase tracking-wider">Not Your Average Cheer Gym</span>
+                    <span class="inline-block px-3 py-1 bg-white text-black text-xs font-black rounded-full mb-2 uppercase tracking-wider">Not Your Average Cheer Gym</span>
                     <h2 class="text-2xl font-extrabold text-white">2027 Season Tryouts & Assessments</h2>
                     <p class="text-sm text-gray-400 mt-1">Consistent • Resilient • Authentic • Positive • Growing</p>
                 </div>
                 <div class="flex flex-wrap gap-2 text-xs font-semibold">
-                    <span class="px-2.5 py-1 bg-craveBorder rounded-lg text-gray-300">C: Quality Always</span>
-                    <span class="px-2.5 py-1 bg-craveBorder rounded-lg text-gray-300">R: Recover Quickly</span>
-                    <span class="px-2.5 py-1 bg-craveBorder rounded-lg text-gray-300">A: Express Nature</span>
-                    <span class="px-2.5 py-1 bg-craveBorder rounded-lg text-gray-300">V: Positive Atmosphere</span>
-                    <span class="px-2.5 py-1 bg-craveBorder rounded-lg text-gray-300">E: Grow Exponentially</span>
+                    <span class="px-2.5 py-1 bg-craveSubtle border border-craveBorder text-gray-300 rounded-lg">C: Quality Always</span>
+                    <span class="px-2.5 py-1 bg-craveSubtle border border-craveBorder text-gray-300 rounded-lg">R: Recover Quickly</span>
+                    <span class="px-2.5 py-1 bg-craveSubtle border border-craveBorder text-gray-300 rounded-lg">A: Express Nature</span>
+                    <span class="px-2.5 py-1 bg-craveSubtle border border-craveBorder text-gray-300 rounded-lg">V: Positive Atmosphere</span>
+                    <span class="px-2.5 py-1 bg-craveSubtle border border-craveBorder text-gray-300 rounded-lg">E: Grow Exponentially</span>
                 </div>
             </div>
         </div>
 
         <!-- Metric Cards -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div onclick="filterByStatus('all')" class="bg-craveCard border border-craveBorder hover:border-gray-600 cursor-pointer p-4 rounded-2xl transition-all">
+            <div onclick="filterByStatus('all')" class="bg-craveCard border border-craveBorder hover:border-white cursor-pointer p-4 rounded-2xl transition-all">
                 <p class="text-xs font-semibold text-gray-400 uppercase">Total Athletes</p>
                 <p class="text-3xl font-extrabold text-white mt-1" id="stat-total">0</p>
             </div>
-            <div onclick="filterByStatus('To be assessed')" class="bg-craveCard border border-craveBorder hover:border-amber-500/50 cursor-pointer p-4 rounded-2xl transition-all">
-                <p class="text-xs font-semibold text-amber-400 uppercase">To Be Assessed</p>
+            <div onclick="filterByStatus('To be assessed')" class="bg-craveCard border border-craveBorder hover:border-gray-500 cursor-pointer p-4 rounded-2xl transition-all">
+                <p class="text-xs font-semibold text-gray-400 uppercase">To Be Assessed</p>
                 <p class="text-3xl font-extrabold text-white mt-1" id="stat-assess">0</p>
             </div>
-            <div onclick="filterByStatus('Pending approval')" class="bg-craveCard border border-craveBorder hover:border-purple-500/50 cursor-pointer p-4 rounded-2xl transition-all">
-                <p class="text-xs font-semibold text-purple-400 uppercase">Pending Approval</p>
+            <div onclick="filterByStatus('Pending approval')" class="bg-craveCard border border-craveBorder hover:border-gray-500 cursor-pointer p-4 rounded-2xl transition-all">
+                <p class="text-xs font-semibold text-gray-400 uppercase">Pending Approval</p>
                 <p class="text-3xl font-extrabold text-white mt-1" id="stat-pending">0</p>
             </div>
-            <div onclick="filterByStatus('Complete')" class="bg-craveCard border border-craveBorder hover:border-emerald-500/50 cursor-pointer p-4 rounded-2xl transition-all">
-                <p class="text-xs font-semibold text-emerald-400 uppercase">Complete</p>
+            <div onclick="filterByStatus('Complete')" class="bg-craveCard border border-craveBorder hover:border-white cursor-pointer p-4 rounded-2xl transition-all">
+                <p class="text-xs font-semibold text-gray-400 uppercase">Complete</p>
                 <p class="text-3xl font-extrabold text-white mt-1" id="stat-complete">0</p>
+            </div>
+        </div>
+
+        <!-- Skill Level Legend Bar -->
+        <div class="mb-6 bg-craveCard border border-craveBorder rounded-2xl p-4">
+            <p class="text-xs font-extrabold uppercase text-gray-400 tracking-wider mb-2">Skill Level Color Key:</p>
+            <div class="flex flex-wrap gap-2 text-xs font-bold">
+                <span class="px-2.5 py-1 rounded bg-lvl0 text-black border border-white">Level 0</span>
+                <span class="px-2.5 py-1 rounded bg-lvl1 text-black">Level 1</span>
+                <span class="px-2.5 py-1 rounded bg-lvl2 text-white">Level 2</span>
+                <span class="px-2.5 py-1 rounded bg-lvl3 text-white">Level 3</span>
+                <span class="px-2.5 py-1 rounded bg-lvl4 text-black">Level 4</span>
+                <span class="px-2.5 py-1 rounded bg-lvl5 text-black">Level 5</span>
+                <span class="px-2.5 py-1 rounded bg-lvl6 text-white">Level 6</span>
+                <span class="px-2.5 py-1 rounded bg-lvl7 text-white border border-craveBorder">Level 7</span>
             </div>
         </div>
 
         <!-- Filters & Search Toolbar -->
         <div class="flex flex-col md:flex-row gap-4 items-center justify-between mb-6">
-            <!-- Division Pills -->
             <div class="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0" id="division-pills">
-                <button onclick="filterDivision('All')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-craveDark transition-all whitespace-nowrap div-pill">All Divisions</button>
+                <button onclick="filterDivision('All')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-black transition-all whitespace-nowrap div-pill">All Divisions</button>
                 <button onclick="filterDivision('Youth')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Youth</button>
                 <button onclick="filterDivision('Junior')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Junior</button>
                 <button onclick="filterDivision('Senior')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Senior</button>
                 <button onclick="filterDivision('Open')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Open</button>
             </div>
 
-            <!-- Search Input -->
             <div class="w-full md:w-72">
-                <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search athlete or #00..." class="w-full bg-craveCard border border-craveBorder rounded-xl px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cravePink transition-all">
+                <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search athlete or #00..." class="w-full bg-craveCard border border-craveBorder rounded-xl px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white transition-all">
             </div>
         </div>
 
@@ -114,49 +136,47 @@
     </main>
 
     <!-- Athlete Detail Modal -->
-    <div id="detail-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="detail-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-craveCard border border-craveBorder rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
-            <!-- Modal Header -->
-            <div class="p-6 border-b border-craveBorder flex items-center justify-between bg-[#171922]">
+            <div class="p-6 border-b border-craveBorder flex items-center justify-between bg-craveSubtle">
                 <div class="flex items-center space-x-4">
-                    <div id="modal-avatar" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cravePink to-purple-600 flex items-center justify-center font-extrabold text-xl text-white">
-                        EA
+                    <div id="modal-avatar" class="w-14 h-14 rounded-2xl bg-white text-black font-black text-xl flex items-center justify-center shadow-lg">
+                        --
                     </div>
                     <div>
                         <div class="flex items-center space-x-2">
                             <h3 id="modal-name" class="text-xl font-extrabold text-white">Athlete Name</h3>
-                            <span id="modal-tryout" class="text-xs font-mono px-2 py-0.5 rounded bg-craveBorder text-cravePink">#000</span>
+                            <span id="modal-tryout" class="text-xs font-mono px-2 py-0.5 rounded bg-craveDark text-white border border-craveBorder">#000</span>
                         </div>
-                        <p id="modal-meta" class="text-xs text-gray-400 mt-0.5">Senior Elite • Flyer</p>
+                        <p id="modal-meta" class="text-xs text-gray-400 mt-0.5">Division • Position</p>
                     </div>
                 </div>
                 <button onclick="closeDetailModal()" class="w-10 h-10 rounded-xl bg-craveBorder hover:bg-gray-700 flex items-center justify-center text-gray-300 font-bold transition-all">✕</button>
             </div>
 
-            <!-- Modal Content (Skill Matrix Scrollable) -->
             <div class="p-6 overflow-y-auto space-y-6 flex-1" id="modal-skills-container">
-                <!-- Skill categories injected here -->
+                <!-- Skill matrix dynamically generated -->
             </div>
         </div>
     </div>
 
     <!-- Add Athlete Modal -->
-    <div id="add-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="add-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-craveCard border border-craveBorder rounded-2xl w-full max-w-md overflow-hidden shadow-2xl p-6">
             <h3 class="text-lg font-extrabold text-white mb-4">Add New Athlete</h3>
             <form onsubmit="handleAddNewAthlete(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1">Full Name</label>
-                    <input type="text" id="new-name" required placeholder="e.g. Maya Smith" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cravePink">
+                    <input type="text" id="new-name" required placeholder="e.g. Maya Smith" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-white">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-400 mb-1">Tryout Number</label>
-                        <input type="text" id="new-tryout" required placeholder="#045" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cravePink">
+                        <input type="text" id="new-tryout" required placeholder="#045" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-white">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-400 mb-1">Division</label>
-                        <select id="new-division" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-cravePink">
+                        <select id="new-division" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white">
                             <option value="Youth">Youth</option>
                             <option value="Junior">Junior</option>
                             <option value="Senior" selected>Senior</option>
@@ -166,7 +186,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1">Stunt Position</label>
-                    <select id="new-position" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-cravePink">
+                    <select id="new-position" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white">
                         <option value="Flyer">Flyer</option>
                         <option value="Base">Base</option>
                         <option value="Backspot">Backspot</option>
@@ -175,109 +195,60 @@
                 </div>
                 <div class="flex justify-end space-x-3 pt-2">
                     <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-xl text-sm font-bold bg-craveBorder text-gray-300 hover:bg-gray-700">Cancel</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl text-sm font-bold bg-cravePink text-white hover:bg-cravePink/90 shadow-lg shadow-cravePink/25">Add Athlete</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-black hover:bg-gray-200">Add Athlete</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Video Preview Modal -->
-    <div id="video-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4">
-        <div class="relative max-w-3xl w-full bg-craveCard border border-craveBorder rounded-2xl overflow-hidden">
-            <div class="p-4 border-b border-craveBorder flex justify-between items-center">
-                <h4 id="video-modal-title" class="font-bold text-sm text-white">Skill Video Preview</h4>
-                <button onclick="closeVideoModal()" class="text-gray-400 hover:text-white font-bold text-lg">✕</button>
-            </div>
-            <div class="p-4 flex justify-center bg-black">
-                <video id="preview-player" controls class="max-h-[70vh] rounded-lg"></video>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main JavaScript Application Logic -->
+    <!-- Main Application JavaScript -->
     <script>
-        // Initial Mock Database for Crave Athletics Tryouts
-        let athletes = [
-            {
-                id: 1,
-                name: "Ella Murphy",
-                tryout: "#009",
-                division: "Senior",
-                position: "Flyer",
-                status: "Complete",
-                skills: {
-                    "Running Tumbling": [
-                        { name: "Round Off Back Handspring", status: "Has It", videoUrl: null },
-                        { name: "RO BHS Tuck", status: "Has It", videoUrl: null },
-                        { name: "Layout / Full", status: "Working", videoUrl: null }
-                    ],
-                    "Jumps": [
-                        { name: "Toe Touch", status: "Has It", videoUrl: null },
-                        { name: "Pike Jump", status: "Has It", videoUrl: null },
-                        { name: "Jump Sequence x3", status: "Has It", videoUrl: null }
-                    ],
-                    "Stunting": [
-                        { name: "Extension / Lib", status: "Has It", videoUrl: null },
-                        { name: "Full Down / Rewind", status: "Working", videoUrl: null },
-                        { name: "Tick Tock Body Positions", status: "Has It", videoUrl: null }
-                    ],
-                    "Flexibility": [
-                        { name: "Left & Right Splits", status: "Has It", videoUrl: null },
-                        { name: "Scorpion / Bow & Arrow", status: "Has It", videoUrl: null }
-                    ]
-                }
-            },
-            {
-                id: 2,
-                name: "Liam O'Connor",
-                tryout: "#014",
-                division: "Junior",
-                position: "Base",
-                status: "Pending approval",
-                skills: {
-                    "Running Tumbling": [
-                        { name: "Round Off Back Handspring", status: "Working", videoUrl: null },
-                        { name: "RO BHS Tuck", status: "No", videoUrl: null }
-                    ],
-                    "Jumps": [
-                        { name: "Toe Touch", status: "Working", videoUrl: null },
-                        { name: "Pike Jump", status: "Has It", videoUrl: null }
-                    ],
-                    "Stunting": [
-                        { name: "Extension Base Strength", status: "Has It", videoUrl: null },
-                        { name: "Coed Toss Up Base", status: "Working", videoUrl: null }
-                    ]
-                }
-            },
-            {
-                id: 3,
-                name: "Sophie Taylor",
-                tryout: "#022",
-                division: "Youth",
-                position: "Flyer",
-                status: "To be assessed",
-                skills: {
-                    "Running Tumbling": [
-                        { name: "Cartwheel / Round Off", status: "Has It", videoUrl: null },
-                        { name: "Back Handspring", status: "Working", videoUrl: null }
-                    ],
-                    "Jumps": [
-                        { name: "Toe Touch", status: "Has It", videoUrl: null }
-                    ],
-                    "Stunting": [
-                        { name: "Prep Level Body Positions", status: "Has It", videoUrl: null },
-                        { name: "Extension Stability", status: "Working", videoUrl: null }
-                    ]
-                }
-            }
-        ];
+        // Fresh Empty Roster for Crave Athletics (Ready for Supabase Sync)
+        let athletes = [];
 
         let currentFilterDivision = 'All';
         let currentFilterStatus = 'all';
         let searchQuery = '';
         let activeAthleteId = null;
 
-        // Render Roster
+        // Level Styling Map
+        const levelBadgeMap = {
+            0: "bg-lvl0 text-black border border-white",
+            1: "bg-lvl1 text-black",
+            2: "bg-lvl2 text-white",
+            3: "bg-lvl3 text-white",
+            4: "bg-lvl4 text-black",
+            5: "bg-lvl5 text-black",
+            6: "bg-lvl6 text-white",
+            7: "bg-lvl7 text-white border border-craveBorder"
+        };
+
+        // Standard Skill Template Generator
+        function generateDefaultSkillTemplate() {
+            return {
+                "Running Tumbling": [
+                    { name: "Cartwheel / Round Off", level: 1, status: "No", videoUrl: null },
+                    { name: "RO Back Handspring", level: 2, status: "No", videoUrl: null },
+                    { name: "RO BHS Tuck", level: 3, status: "No", videoUrl: null },
+                    { name: "Layout", level: 4, status: "No", videoUrl: null },
+                    { name: "Full Twisting Layout", level: 5, status: "No", videoUrl: null }
+                ],
+                "Standing Tumbling": [
+                    { name: "Forward / Backward Roll", level: 0, status: "No", videoUrl: null },
+                    { name: "Standing Back Handspring", level: 2, status: "No", videoUrl: null },
+                    { name: "Jump BHS", level: 3, status: "No", videoUrl: null },
+                    { name: "Standing Tuck", level: 4, status: "No", videoUrl: null }
+                ],
+                "Stunting & Pyramids": [
+                    { name: "Prep Level Stunt", level: 1, status: "No", videoUrl: null },
+                    { name: "Extension / Lib", level: 2, status: "No", videoUrl: null },
+                    { name: "Full Up / Release Moves", level: 4, status: "No", videoUrl: null },
+                    { name: "Rewind / Elite Inversions", level: 6, status: "No", videoUrl: null }
+                ]
+            };
+        }
+
+        // Render Roster Grid
         function renderRoster() {
             const grid = document.getElementById('roster-grid');
             grid.innerHTML = '';
@@ -289,40 +260,42 @@
                 return matchDiv && matchStatus && matchSearch;
             });
 
-            // Update stats
             document.getElementById('stat-total').innerText = athletes.length;
             document.getElementById('stat-assess').innerText = athletes.filter(a => a.status === 'To be assessed').length;
             document.getElementById('stat-pending').innerText = athletes.filter(a => a.status === 'Pending approval').length;
             document.getElementById('stat-complete').innerText = athletes.filter(a => a.status === 'Complete').length;
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500 text-sm">No athletes found matching your filters.</div>`;
+                grid.innerHTML = `
+                    <div class="col-span-full py-16 text-center bg-craveCard border border-craveBorder rounded-2xl p-8">
+                        <p class="text-base font-bold text-gray-300">No Athletes on Roster</p>
+                        <p class="text-xs text-gray-500 mt-1 mb-4">Click "+ Add Athlete" above to add your first athlete to the tryout roster.</p>
+                        <button onclick="openAddModal()" class="px-4 py-2 bg-white text-black text-xs font-black rounded-xl hover:bg-gray-200 transition-all">+ Add Athlete</button>
+                    </div>
+                `;
                 return;
             }
 
             filtered.forEach(athlete => {
                 const initials = athlete.name.split(' ').map(n => n[0]).join('');
-                let statusColor = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
-                if (athlete.status === 'Complete') statusColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
-                if (athlete.status === 'Pending approval') statusColor = 'bg-purple-500/10 text-purple-400 border-purple-500/20';
-
+                
                 const card = document.createElement('div');
-                card.className = "bg-craveCard border border-craveBorder hover:border-gray-600 rounded-2xl p-5 transition-all cursor-pointer flex flex-col justify-between group";
+                card.className = "bg-craveCard border border-craveBorder hover:border-gray-400 rounded-2xl p-5 transition-all cursor-pointer flex flex-col justify-between group";
                 card.onclick = () => openDetailModal(athlete.id);
                 
                 card.innerHTML = `
                     <div>
                         <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-cravePink to-purple-600 flex items-center justify-center font-bold text-white text-base shadow-md">
+                            <div class="w-12 h-12 rounded-xl bg-white text-black font-black flex items-center justify-center text-base shadow-md">
                                 ${initials}
                             </div>
-                            <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-craveBorder text-gray-300">${athlete.tryout}</span>
+                            <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-craveSubtle border border-craveBorder text-gray-300">${athlete.tryout}</span>
                         </div>
-                        <h3 class="font-extrabold text-white text-base group-hover:text-cravePink transition-colors">${athlete.name}</h3>
-                        <p class="text-xs text-gray-400 mt-0.5">${athlete.division} Elite • ${athlete.position}</p>
+                        <h3 class="font-extrabold text-white text-base group-hover:text-gray-300 transition-colors">${athlete.name}</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">${athlete.division} • ${athlete.position}</p>
                     </div>
                     <div class="mt-6 flex items-center justify-between pt-4 border-t border-craveBorder">
-                        <span class="text-xs px-2.5 py-1 rounded-full border ${statusColor} font-semibold">${athlete.status}</span>
+                        <span class="text-xs px-2.5 py-1 rounded-full border border-craveBorder bg-craveSubtle font-semibold text-gray-300">${athlete.status}</span>
                         <span class="text-xs font-bold text-gray-400 group-hover:text-white transition-colors">View Matrix →</span>
                     </div>
                 `;
@@ -330,12 +303,11 @@
             });
         }
 
-        // Division & Status Filters
         function filterDivision(div) {
             currentFilterDivision = div;
             document.querySelectorAll('.div-pill').forEach(btn => {
                 if (btn.innerText.includes(div) || (div === 'All' && btn.innerText.includes('All'))) {
-                    btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-craveDark transition-all whitespace-nowrap div-pill";
+                    btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-black transition-all whitespace-nowrap div-pill";
                 } else {
                     btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill";
                 }
@@ -353,7 +325,6 @@
             renderRoster();
         }
 
-        // Detail Modal Handling
         function openDetailModal(id) {
             activeAthleteId = id;
             const athlete = athletes.find(a => a.id === id);
@@ -371,28 +342,27 @@
                 let catDiv = document.createElement('div');
                 catDiv.className = "bg-craveDark border border-craveBorder rounded-xl p-4";
                 
-                let skillsHtml = skills.map((skill, sIdx) => `
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between py-2.5 border-b border-craveBorder/60 last:border-0 gap-3">
-                        <div class="flex items-center space-x-3">
-                            <span class="text-sm font-medium text-gray-200">${skill.name}</span>
-                            ${skill.videoUrl ? `<button onclick="playVideo('${skill.videoUrl}', '${skill.name}')" class="text-xs bg-cravePink/20 text-cravePink px-2 py-0.5 rounded font-bold hover:bg-cravePink/30 transition-all">▶ Play Clip</button>` : ''}
-                        </div>
-                        <div class="flex items-center justify-between sm:justify-end space-x-2">
-                            <div class="inline-flex rounded-lg bg-craveCard border border-craveBorder p-0.5">
-                                <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'No')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'No' ? 'bg-red-500/20 text-red-400' : 'text-gray-400 hover:text-white'}">No</button>
-                                <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Working')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Working' ? 'bg-amber-500/20 text-amber-400' : 'text-gray-400 hover:text-white'}">Working</button>
-                                <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Has It')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Has It' ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400 hover:text-white'}">Has It</button>
+                let skillsHtml = skills.map((skill, sIdx) => {
+                    const badgeClass = levelBadgeMap[skill.level] || levelBadgeMap[0];
+                    return `
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between py-2.5 border-b border-craveBorder/60 last:border-0 gap-3">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xs font-black px-2 py-0.5 rounded ${badgeClass}">Lvl ${skill.level}</span>
+                                <span class="text-sm font-medium text-gray-200">${skill.name}</span>
                             </div>
-                            <label class="cursor-pointer bg-craveBorder hover:bg-gray-700 text-gray-300 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all">
-                                + Clip
-                                <input type="file" accept="video/*" class="hidden" onchange="uploadSkillVideo(event, ${athlete.id}, '${category}', ${sIdx})">
-                            </label>
+                            <div class="flex items-center justify-between sm:justify-end space-x-2">
+                                <div class="inline-flex rounded-lg bg-craveCard border border-craveBorder p-0.5">
+                                    <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'No')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'No' ? 'bg-red-500/20 text-red-400' : 'text-gray-400 hover:text-white'}">No</button>
+                                    <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Working')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Working' ? 'bg-amber-500/20 text-amber-400' : 'text-gray-400 hover:text-white'}">Working</button>
+                                    <button onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Has It')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Has It' ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400 hover:text-white'}">Has It</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
 
                 catDiv.innerHTML = `
-                    <h4 class="font-extrabold text-xs text-cravePink uppercase tracking-wider mb-2">${category}</h4>
+                    <h4 class="font-extrabold text-xs text-white uppercase tracking-wider mb-2 border-b border-craveBorder pb-1">${category}</h4>
                     <div class="space-y-1">${skillsHtml}</div>
                 `;
                 container.appendChild(catDiv);
@@ -414,33 +384,6 @@
             }
         }
 
-        function uploadSkillVideo(event, athleteId, category, skillIdx) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const videoUrl = URL.createObjectURL(file);
-            const athlete = athletes.find(a => a.id === athleteId);
-            if (athlete && athlete.skills[category] && athlete.skills[category][skillIdx]) {
-                athlete.skills[category][skillIdx].videoUrl = videoUrl;
-                openDetailModal(athleteId);
-            }
-        }
-
-        function playVideo(url, title) {
-            document.getElementById('video-modal-title').innerText = title;
-            const player = document.getElementById('preview-player');
-            player.src = url;
-            document.getElementById('video-modal').classList.remove('hidden');
-            player.play();
-        }
-
-        function closeVideoModal() {
-            const player = document.getElementById('preview-player');
-            player.pause();
-            player.src = '';
-            document.getElementById('video-modal').classList.add('hidden');
-        }
-
-        // Add Athlete Modal
         function openAddModal() {
             document.getElementById('add-modal').classList.remove('hidden');
         }
@@ -463,18 +406,7 @@
                 division,
                 position,
                 status: "To be assessed",
-                skills: {
-                    "Running Tumbling": [
-                        { name: "Round Off Back Handspring", status: "No", videoUrl: null },
-                        { name: "RO BHS Tuck", status: "No", videoUrl: null }
-                    ],
-                    "Jumps": [
-                        { name: "Toe Touch", status: "No", videoUrl: null }
-                    ],
-                    "Stunting": [
-                        { name: "Extension / Prep", status: "No", videoUrl: null }
-                    ]
-                }
+                skills: generateDefaultSkillTemplate()
             };
 
             athletes.unshift(newAthlete);
@@ -482,7 +414,7 @@
             renderRoster();
         }
 
-        // Initial render on load
+        // Initial render
         renderRoster();
     </script>
 </body>
