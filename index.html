@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div class="flex items-center space-x-3">
-                <button type="button" onclick="openAddModal()" class="bg-white hover:bg-gray-200 text-black px-4 py-2 rounded-xl text-sm font-extrabold transition-all flex items-center space-x-2 shadow-md cursor-pointer">
+                <button type="button" id="open-add-btn" class="bg-white hover:bg-gray-200 text-black px-4 py-2 rounded-xl text-sm font-extrabold transition-all flex items-center space-x-2 shadow-md cursor-pointer">
                     <span>+ Add Athlete</span>
                 </button>
             </div>
@@ -75,19 +75,19 @@
 
         <!-- Metric Cards -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div onclick="filterByStatus('all')" class="bg-craveCard border border-craveBorder hover:border-white cursor-pointer p-4 rounded-2xl transition-all">
+            <div data-status="all" class="status-card bg-craveCard border border-craveBorder hover:border-white cursor-pointer p-4 rounded-2xl transition-all">
                 <p class="text-xs font-semibold text-gray-400 uppercase">Total Athletes</p>
                 <p class="text-3xl font-extrabold text-white mt-1" id="stat-total">0</p>
             </div>
-            <div onclick="filterByStatus('To be assessed')" class="bg-craveCard border border-craveBorder hover:border-gray-500 cursor-pointer p-4 rounded-2xl transition-all">
+            <div data-status="To be assessed" class="status-card bg-craveCard border border-craveBorder hover:border-gray-500 cursor-pointer p-4 rounded-2xl transition-all">
                 <p class="text-xs font-semibold text-gray-400 uppercase">To Be Assessed</p>
                 <p class="text-3xl font-extrabold text-white mt-1" id="stat-assess">0</p>
             </div>
-            <div onclick="filterByStatus('Pending')" class="bg-craveCard border border-craveBorder hover:border-gray-500 cursor-pointer p-4 rounded-2xl transition-all">
+            <div data-status="Pending" class="status-card bg-craveCard border border-craveBorder hover:border-gray-500 cursor-pointer p-4 rounded-2xl transition-all">
                 <p class="text-xs font-semibold text-gray-400 uppercase">Pending</p>
                 <p class="text-3xl font-extrabold text-white mt-1" id="stat-pending">0</p>
             </div>
-            <div onclick="filterByStatus('Complete')" class="bg-craveCard border border-craveBorder hover:border-white cursor-pointer p-4 rounded-2xl transition-all">
+            <div data-status="Complete" class="status-card bg-craveCard border border-craveBorder hover:border-white cursor-pointer p-4 rounded-2xl transition-all">
                 <p class="text-xs font-semibold text-gray-400 uppercase">Complete</p>
                 <p class="text-3xl font-extrabold text-white mt-1" id="stat-complete">0</p>
             </div>
@@ -111,17 +111,17 @@
         <!-- Filters & Search Toolbar -->
         <div class="flex flex-col md:flex-row gap-4 items-center justify-between mb-6">
             <div class="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0" id="division-pills">
-                <button onclick="filterDivision('All')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-black transition-all whitespace-nowrap div-pill">All Divisions</button>
-                <button onclick="filterDivision('Tiny')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Tiny</button>
-                <button onclick="filterDivision('Mini')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Mini</button>
-                <button onclick="filterDivision('Youth')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Youth</button>
-                <button onclick="filterDivision('Junior')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Junior</button>
-                <button onclick="filterDivision('Senior')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Senior</button>
-                <button onclick="filterDivision('Open')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill">Open</button>
+                <button type="button" data-div="All" class="div-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-black transition-all whitespace-nowrap">All Divisions</button>
+                <button type="button" data-div="Tiny" class="div-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap">Tiny</button>
+                <button type="button" data-div="Mini" class="div-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap">Mini</button>
+                <button type="button" data-div="Youth" class="div-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap">Youth</button>
+                <button type="button" data-div="Junior" class="div-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap">Junior</button>
+                <button type="button" data-div="Senior" class="div-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap">Senior</button>
+                <button type="button" data-div="Open" class="div-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap">Open</button>
             </div>
 
             <div class="w-full md:w-72">
-                <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search athlete..." class="w-full bg-craveCard border border-craveBorder rounded-xl px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white transition-all">
+                <input type="text" id="search-input" placeholder="Search athlete..." class="w-full bg-craveCard border border-craveBorder rounded-xl px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white transition-all">
             </div>
         </div>
 
@@ -147,7 +147,7 @@
                         <p id="modal-meta" class="text-xs text-gray-400 mt-0.5">Division • Position</p>
                     </div>
                 </div>
-                <button onclick="closeDetailModal()" class="w-10 h-10 rounded-xl bg-craveBorder hover:bg-gray-700 flex items-center justify-center text-gray-300 font-bold transition-all">✕</button>
+                <button type="button" id="close-detail-btn" class="w-10 h-10 rounded-xl bg-craveBorder hover:bg-gray-700 flex items-center justify-center text-gray-300 font-bold transition-all cursor-pointer">✕</button>
             </div>
 
             <div class="p-6 overflow-y-auto space-y-6 flex-1" id="modal-skills-container">
@@ -160,7 +160,7 @@
     <div id="add-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-craveCard border border-craveBorder rounded-2xl w-full max-w-md overflow-hidden shadow-2xl p-6">
             <h3 class="text-lg font-extrabold text-white mb-4">Add New Athlete</h3>
-            <form id="add-athlete-form" onsubmit="handleAddNewAthlete(event)" class="space-y-4">
+            <form id="add-athlete-form" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1">Full Name</label>
                     <input type="text" id="new-name" required placeholder="e.g. Maya Smith" class="w-full bg-craveDark border border-craveBorder rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-white">
@@ -187,8 +187,8 @@
                     </div>
                 </div>
                 <div class="flex justify-end space-x-3 pt-2">
-                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-xl text-sm font-bold bg-craveBorder text-gray-300 hover:bg-gray-700">Cancel</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-black hover:bg-gray-200">Add Athlete</button>
+                    <button type="button" id="close-add-btn" class="px-4 py-2 rounded-xl text-sm font-bold bg-craveBorder text-gray-300 hover:bg-gray-700 cursor-pointer">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-black hover:bg-gray-200 cursor-pointer">Add Athlete</button>
                 </div>
             </form>
         </div>
@@ -199,7 +199,7 @@
         <div class="relative max-w-3xl w-full bg-craveCard border border-craveBorder rounded-2xl overflow-hidden shadow-2xl">
             <div class="p-4 border-b border-craveBorder flex justify-between items-center">
                 <h4 id="video-modal-title" class="font-bold text-sm text-white">Skill Video Preview</h4>
-                <button onclick="closeVideoModal()" class="text-gray-400 hover:text-white font-bold text-lg">✕</button>
+                <button type="button" id="close-video-btn" class="text-gray-400 hover:text-white font-bold text-lg cursor-pointer">✕</button>
             </div>
             <div class="p-4 flex justify-center bg-black">
                 <video id="preview-player" controls class="max-h-[70vh] rounded-lg"></video>
@@ -216,7 +216,7 @@
         try {
             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         } catch(e) {
-            alert('Failed to initialize Supabase client: ' + e.message);
+            console.error('Failed to initialize Supabase client:', e);
         }
 
         let athletes = [];
@@ -236,7 +236,6 @@
             7: "bg-lvl7 text-white border border-craveBorder"
         };
 
-        // Complete Skill Template Based on Exact User Spec
         function generateDefaultSkillTemplate() {
             return {
                 "Motions": [
@@ -318,9 +317,12 @@
                     <div class="col-span-full py-16 text-center bg-craveCard border border-craveBorder rounded-2xl p-8">
                         <p class="text-base font-bold text-gray-300">No Athletes on Roster</p>
                         <p class="text-xs text-gray-500 mt-1 mb-4">Click "+ Add Athlete" above to add your first athlete to the tryout roster.</p>
-                        <button onclick="openAddModal()" class="px-4 py-2 bg-white text-black text-xs font-black rounded-xl hover:bg-gray-200 transition-all cursor-pointer">+ Add Athlete</button>
+                        <button type="button" class="open-add-btn-inline px-4 py-2 bg-white text-black text-xs font-black rounded-xl hover:bg-gray-200 transition-all cursor-pointer">+ Add Athlete</button>
                     </div>
                 `;
+                // Re-bind inline empty-state button
+                const emptyBtn = grid.querySelector('.open-add-btn-inline');
+                if (emptyBtn) emptyBtn.addEventListener('click', openAddModal);
                 return;
             }
 
@@ -337,7 +339,7 @@
                             <div class="w-12 h-12 rounded-xl bg-white text-black font-black flex items-center justify-center text-base shadow-md">
                                 ${initials}
                             </div>
-                            <button onclick="deleteAthlete(event, ${athlete.id})" class="text-gray-500 hover:text-red-400 font-bold px-1.5 py-0.5 rounded text-xs transition-colors" title="Delete Athlete">✕</button>
+                            <button type="button" data-delete-id="${athlete.id}" class="delete-btn text-gray-500 hover:text-red-400 font-bold px-1.5 py-0.5 rounded text-xs transition-colors" title="Delete Athlete">✕</button>
                         </div>
                         <h3 class="font-extrabold text-white text-base group-hover:text-gray-300 transition-colors">${athlete.name}</h3>
                         <p class="text-xs text-gray-400 mt-0.5">${athlete.division} • ${athlete.position}</p>
@@ -347,29 +349,31 @@
                         <span class="text-xs font-bold text-gray-400 group-hover:text-white transition-colors">View Matrix →</span>
                     </div>
                 `;
+
+                // Handle delete click separately so it doesn't open the modal
+                const delBtn = card.querySelector('.delete-btn');
+                delBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteAthlete(athlete.id);
+                });
+
                 grid.appendChild(card);
             });
         }
 
-        function filterDivision(div) {
+        function filterDivision(div, btnElement) {
             currentFilterDivision = div;
-            document.querySelectorAll('.div-pill').forEach(btn => {
-                if (btn.innerText.includes(div) || (div === 'All' && btn.innerText.includes('All'))) {
-                    btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-black transition-all whitespace-nowrap div-pill";
-                } else {
-                    btn.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap div-pill";
-                }
+            document.querySelectorAll('.div-btn').forEach(btn => {
+                btn.className = "div-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-craveCard border border-craveBorder text-gray-300 hover:border-gray-500 transition-all whitespace-nowrap";
             });
+            if (btnElement) {
+                btnElement.className = "div-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-black transition-all whitespace-nowrap";
+            }
             renderRoster();
         }
 
         function filterByStatus(status) {
             currentFilterStatus = status;
-            renderRoster();
-        }
-
-        function handleSearch(val) {
-            searchQuery = val;
             renderRoster();
         }
 
@@ -398,17 +402,17 @@
                             <div class="flex items-center space-x-3">
                                 ${isTumbling ? `<span class="text-xs font-black px-2 py-0.5 rounded ${badgeClass}">Lvl ${skill.level}</span>` : ''}
                                 <span class="text-sm font-medium text-gray-200">${skill.name}</span>
-                                ${skill.videoUrl ? `<button type="button" onclick="playVideo('${skill.videoUrl}', '${skill.name}')" class="text-xs bg-white/10 text-white px-2 py-0.5 rounded font-bold hover:bg-white/20 transition-all">▶ Play Clip</button>` : ''}
+                                ${skill.videoUrl ? `<button type="button" data-play-url="${skill.videoUrl}" data-play-title="${skill.name}" class="play-vid-btn text-xs bg-white/10 text-white px-2 py-0.5 rounded font-bold hover:bg-white/20 transition-all cursor-pointer">▶ Play Clip</button>` : ''}
                             </div>
                             <div class="flex items-center justify-between sm:justify-end space-x-2">
                                 <div class="inline-flex rounded-lg bg-craveCard border border-craveBorder p-0.5">
-                                    <button type="button" onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'No')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'No' ? 'bg-red-500/20 text-red-400' : 'text-gray-400 hover:text-white'}">No</button>
-                                    <button type="button" onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Working')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Working' ? 'bg-amber-500/20 text-amber-400' : 'text-gray-400 hover:text-white'}">Working</button>
-                                    <button type="button" onclick="updateSkillStatus(${athlete.id}, '${category}', ${sIdx}, 'Has It')" class="px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Has It' ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400 hover:text-white'}">Has It</button>
+                                    <button type="button" data-status-val="No" data-category="${category}" data-index="${sIdx}" class="status-btn px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'No' ? 'bg-red-500/20 text-red-400' : 'text-gray-400 hover:text-white'}">No</button>
+                                    <button type="button" data-status-val="Working" data-category="${category}" data-index="${sIdx}" class="status-btn px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Working' ? 'bg-amber-500/20 text-amber-400' : 'text-gray-400 hover:text-white'}">Working</button>
+                                    <button type="button" data-status-val="Has It" data-category="${category}" data-index="${sIdx}" class="status-btn px-2.5 py-1 text-xs font-bold rounded-md transition-all ${skill.status === 'Has It' ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400 hover:text-white'}">Has It</button>
                                 </div>
                                 <label class="cursor-pointer bg-craveBorder hover:bg-gray-700 text-gray-300 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all">
                                     + Clip
-                                    <input type="file" accept="video/*" class="hidden" onchange="uploadSkillVideo(event, ${athlete.id}, '${category}', ${sIdx})">
+                                    <input type="file" accept="video/*" class="hidden file-input" data-category="${category}" data-index="${sIdx}">
                                 </label>
                             </div>
                         </div>
@@ -421,6 +425,30 @@
                 `;
                 container.appendChild(catDiv);
             }
+
+            // Bind dynamic elements inside modal
+            container.querySelectorAll('.status-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const cat = e.target.getAttribute('data-category');
+                    const idx = parseInt(e.target.getAttribute('data-index'));
+                    const statusVal = e.target.getAttribute('data-status-val');
+                    updateSkillStatus(activeAthleteId, cat, idx, statusVal);
+                });
+            });
+
+            container.querySelectorAll('.play-vid-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    playVideo(e.target.getAttribute('data-play-url'), e.target.getAttribute('data-play-title'));
+                });
+            });
+
+            container.querySelectorAll('.file-input').forEach(input => {
+                input.addEventListener('change', (e) => {
+                    const cat = e.target.getAttribute('data-category');
+                    const idx = parseInt(e.target.getAttribute('data-index'));
+                    uploadSkillVideo(e, activeAthleteId, cat, idx);
+                });
+            });
 
             document.getElementById('detail-modal').classList.remove('hidden');
         }
@@ -449,7 +477,6 @@
             }
         }
 
-        // Upload directly into Supabase Storage Bucket 'skill-videos' in high definition
         async function uploadSkillVideo(event, athleteId, category, skillIdx) {
             const file = event.target.files[0];
             if (!file) return;
@@ -458,7 +485,6 @@
             const fileName = `${athleteId}-${Date.now()}.${fileExt}`;
             const filePath = `${fileName}`;
 
-            // Show uploading notice
             alert("Uploading video to Supabase Storage...");
 
             const { data: uploadData, error: uploadError } = await supabase.storage
@@ -473,14 +499,12 @@
                 return;
             }
 
-            // Get permanent public URL from Supabase bucket
             const { data: publicURLData } = supabase.storage
                 .from('skill-videos')
                 .getPublicUrl(filePath);
 
             const videoUrl = publicURLData.publicUrl;
 
-            // Save permanent URL to athlete record
             const athlete = athletes.find(a => a.id === athleteId);
             if (athlete && athlete.skills[category] && athlete.skills[category][skillIdx]) {
                 athlete.skills[category][skillIdx].videoUrl = videoUrl;
@@ -515,11 +539,13 @@
         }
 
         function openAddModal() {
-            document.getElementById('add-modal').classList.remove('hidden');
+            const modal = document.getElementById('add-modal');
+            if (modal) modal.classList.remove('hidden');
         }
 
         function closeAddModal() {
-            document.getElementById('add-modal').classList.add('hidden');
+            const modal = document.getElementById('add-modal');
+            if (modal) modal.classList.add('hidden');
         }
 
         async function handleAddNewAthlete(event) {
@@ -555,8 +581,7 @@
             }
         }
 
-        async function deleteAthlete(event, id) {
-            event.stopPropagation();
+        async function deleteAthlete(id) {
             if (!supabase) return;
             if (confirm("Are you sure you want to delete this athlete from the roster?")) {
                 const { error } = await supabase
@@ -572,7 +597,48 @@
             }
         }
 
-        loadAthletesFromSupabase();
+        // Bulletproof Event Bindings
+        document.addEventListener('DOMContentLoaded', () => {
+            const openBtn = document.getElementById('open-add-btn');
+            if (openBtn) openBtn.addEventListener('click', openAddModal);
+
+            const closeAddBtn = document.getElementById('close-add-btn');
+            if (closeAddBtn) closeAddBtn.addEventListener('click', closeAddModal);
+
+            const closeDetailBtn = document.getElementById('close-detail-btn');
+            if (closeDetailBtn) closeDetailBtn.addEventListener('click', closeDetailModal);
+
+            const closeVideoBtn = document.getElementById('close-video-btn');
+            if (closeVideoBtn) closeVideoBtn.addEventListener('click', closeVideoModal);
+
+            const form = document.getElementById('add-athlete-form');
+            if (form) form.addEventListener('submit', handleAddNewAthlete);
+
+            // Division Filter Buttons
+            document.querySelectorAll('.div-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    filterDivision(e.target.getAttribute('data-div'), e.target);
+                });
+            });
+
+            // Status Metric Cards
+            document.querySelectorAll('.status-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const status = e.currentTarget.getAttribute('data-status');
+                    filterByStatus(status);
+                });
+            });
+
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    searchQuery = e.target.value;
+                    renderRoster();
+                });
+            }
+
+            loadAthletesFromSupabase();
+        });
     </script>
 </body>
 </html>
